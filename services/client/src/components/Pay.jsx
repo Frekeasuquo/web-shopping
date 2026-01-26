@@ -1,5 +1,7 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { LaptopMinimalCheck, Loader2, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 
 const Pay = ({cart}) => {
@@ -9,7 +11,7 @@ const Pay = ({cart}) => {
     const {isPending, isError, mutate, data} = useMutation({
         mutationFn: async () => {
             const startTime = Date.now();
-            const response = await axios.post('http://localhost:8000/order', {
+            const response = await axios.post('http://localhost:8000/payment-service', {
                 cart,
             });
             const endTime = Date.now();
@@ -19,12 +21,12 @@ const Pay = ({cart}) => {
     })
 
     return (
-        <div className="bg-red-50 flex flex-col items-center justify-center gap-4 py-8 rounded-xl">
+        <div className="bg-red-50 flex flex-col items-center justify-center gap-4 p-8 rounded-xl">
             <div className="flex flex-col gap-12">
                 <div className="">
                     <div className="flex items-center gap-8">
-                        <h1 className="font-thin tracking-wider">CART TOTAL</h1>
-                        <h2 className="text-xl font-bold tracking-widest">{total}</h2>
+                        <h1 className="font-thin tracking-wider text-black">CART TOTAL</h1>
+                        <h2 className="text-xl font-bold tracking-widest text-black">${total}</h2>
                     </div>
                     <p className="text-sm text-gray-500 mt-4">
                         Shipping & taxes calculated at checkout
@@ -50,9 +52,33 @@ const Pay = ({cart}) => {
                 </div>
                 <button 
                     disabled={isPending}
+                    className="bg-black px-5 py-3 text-white rounded-full flex items-center gap-4 w-max cursor-pointer hover:bg-gray-700 transition-all duration-300 disabled:cursor-not-allowed"
+                    onClick={() => mutate(cart)}
                 >
-                    <span>CHECKOUT</span>
+                    <span className="tracking-wider text-sm">CHECKOUT</span>
+                    {isPending ? (
+                        <Loader2 className="w-4 h-4 animate-spin"/>
+                    ) : (
+                        <ShoppingCart className="w-4 h-4"/>
+                    )}
                 </button>
+                {data && (
+                    <div className="text-green-500 text-sm flex items-center gap-2">
+                        <LaptopMinimalCheck className="w-5 h-5" />
+                        <span>
+                            Successful in{" "}
+                            <span
+                                className={`font-bold ${
+                                data?.duration > 5 ? "text-red-500" : "text-green-500"
+                                }`}
+                            >
+                                {data?.duration}
+                            </span>{" "}
+                            seconds
+                        </span>
+                    </div>
+                )}
+                {isError && <span className="text-red-500">Something went wrong!</span>}
             </div>
         </div>
     )
