@@ -30,7 +30,7 @@ app.post("/payment-service", async (req,res) => {
     const {cart} = req.body
     // Assume that we get the cookie and decrypt the user ID
 
-    const userId = '123'
+    const userId = '1234'
 
     // Todo: Payment
     console.log("Api endpoint hit")

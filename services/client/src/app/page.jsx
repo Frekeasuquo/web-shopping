@@ -64,7 +64,7 @@ const Page = () => {
           ))}
         </div>
         <div className="">
-          <Pay />
+          <Pay cart={cart}/>
         </div>
       </div>
     </div>
