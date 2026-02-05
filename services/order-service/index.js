@@ -23,7 +23,7 @@ const run = async () => {
                 const { userId, cart } = JSON.parse(value)
 
                 // TODO: Create order on DB
-                dummyOrderId = "123456"
+                const dummyOrderId = "123456"
                 console.log(`Order consumer: Order created for user id: ${userId}`)
 
                 await producer.send({

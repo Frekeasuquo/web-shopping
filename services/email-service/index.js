@@ -23,13 +23,13 @@ const run = async () => {
                 const { userId, orderId } = JSON.parse(value)
 
                 // TODO: send email to the user
-                dummyEmailId = "0234567"
+                const dummyEmailId = "0234567"
                 console.log(`Email consumer: Email send to user id ${userId}`)
 
                 await producer.send({
                     topic: "Email successful",
                     messages: [{
-                        value: JSON.stringify({userId, email: dummyEmailId})
+                        value: JSON.stringify({userId, emailId: dummyEmailId})
                     }]
                 })
             }

@@ -16,13 +16,38 @@ const run = async () => {
         });
 
         await consumer.run ({
-            eachMessage: async ({ toipc, partition, message}) => {
-                const value = message.value.toString()
-                const { userId, cart } = JSON.parse(value)
-
-                const total = cart.reduce((acc, item) => acc + item.price, 0);
-
-                console.log(`Analytic consumer: User ${userId} paid ${total}`);
+            eachMessage: async ({ topic, partition, message}) => {
+                switch (topic) {
+                    case "payment-successful": 
+                        {
+                            const value = message.value.toString()
+                            const { userId, cart } = JSON.parse(value)
+                            const total = cart
+                                .reduce((acc, item) => acc + item.price, 0)
+                                .toFixed(2);
+                            console.log(`Analytic consumer: User ${userId} paid ${total}`);
+                        }
+                    break;
+                    case "order-successful": 
+                        {
+                            const value = message.value.toString()
+                            const { userId, orderId } = JSON.parse(value)
+                            
+                            console.log(`Analytic consumer: Order id ${orderId} created for user id ${userId}`);
+                        }
+                    break;
+                    case "email-successful": 
+                        {
+                            const value = message.value.toString()
+                            const { userId, emailId } = JSON.parse(value)
+                            
+                            console.log(`Analytic consumer: Email id ${emailId} sent to user id ${userId}`);
+                        }
+                    break;
+                    default:
+                        break;
+                }
+                
             }
         })
 
